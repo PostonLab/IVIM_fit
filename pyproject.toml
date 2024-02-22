@@ -30,3 +30,54 @@ ivim_fit = "ivim_fit.run:main"
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.group.dev.dependencies]
+pytest-console-scripts = "1.2"
+pytest = "^7.0.1"
+black = "^22.1.0"
+pylint = "^2.12.2"
+isort = "5.12.0"
+poethepoet = "^0.13.1"
+pre-commit = "^2.17.0"
+snakefmt = "^0.6.1"
+yamlfix = "^1.1.0"
+
+
+[tool.poe.tasks]
+setup = "pre-commit install"
+yamlfix = { shell = "find . -type f \\( -iname \\*.yaml -o -iname \\*.yml ! -iname snakemake* ! -iname snakebids* \\) -exec yamlfix {} \\;" }
+yamlfix-check = { shell = "find . -type f \\( -iname \\*.yaml -o -iname \\*.yml ! -iname snakemake* ! -iname snakebids* \\) -exec yamlfix --check {} \\;" }
+isort = "isort --profile black ivim_fit"
+isort-check = "isort -c --profile black ivim_fit"
+black = "black ivim_fit"
+black-check = "black --check ivim_fit"
+snakefmt = "snakefmt ivim_fit"
+snakefmt-check = "snakefmt --check ivim_fit"
+quality = ["yamlfix", "isort", "black", "snakefmt"]
+quality-check = [
+    "yamlfix-check",
+    "isort-check",
+    "black-check",
+    "snakefmt-check",
+]
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 79
+
+[tool.black]
+line-length = 79
+
+[tool.snakefmt]
+line_length = 79
+include = '\.smk$|^Snakefile'
+
+
+[tool.yamlfix]
+line_length = 79
+none_representation = "null"
+section_whitelines = 1
+explicit_start = false
+sequence_style = "block_style"
+
