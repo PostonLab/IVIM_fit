@@ -1,5 +1,5 @@
-bids_dir: '/path/to/bids_dir'
-output_dir: '/path/to/output_dir'
+bids_dir: '/mnt/poston/EvaETP_IVIM/bids_data/bids'
+output_dir: '/mnt/poston/EvaETP_IVIM/results'
 
 #enable printing debug statements during parsing -- disable if generating dag visualization
 debug: False
@@ -22,17 +22,27 @@ targets_by_analysis_level:
 #    https://bids-standard.github.io/pybids/generated/bids.layout.BIDSLayout.html#bids.layout.BIDSLayout.get
 
 pybids_inputs:
-  t1w:
+  T1w:
     filters:
-      suffix: T1w
+      suffix: "T1w"
+      extension: ".nii.gz"
+      datatype: "anat"
+      #desc: "brain" # Require a skull-stripped brain
+      #part: ["mag", false]
     wildcards:
       - subject
-  bold:
+      #- run
+pybids_inputs_dwi:
+  dwi:
     filters:
-      suffix: bold
+      suffix: "dwi"
+      extension: ".nii.gz"
+      datatype: "dwi"
+      desc: "84DL"
     wildcards:
       - subject
-      - run
+      #- run
+
 
 #configuration for the command-line parameters to make available
 # passed on the argparse add_argument()
