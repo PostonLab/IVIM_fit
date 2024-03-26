@@ -11,55 +11,23 @@ from snakebids import (
 configfile: "config/snakebids.yml"
 
 
-# writes inputs_config.yml and updates config dict
-inputs_t1w = generate_inputs(
-    bids_dir=config["bids_dir"],
-    pybids_inputs=config["pybids_inputs"],
-    pybids_config=["bids", "derivatives"],
-    pybidsdb_dir=config.get("pybidsdb_dir"),
-    pybidsdb_reset=config.get("pybidsdb_reset"),
-    derivatives=config["derivatives"],
-    participant_label=config["participant_label"],
-    exclude_participant_label=config["exclude_participant_label"],
-)
-inputs_dwi = generate_inputs(
-    bids_dir=config["bids_dir"],
-    pybids_inputs=config["pybids_inputs_dwi"],
-    pybids_config=["bids", "derivatives"],
-    pybidsdb_dir=config.get("pybidsdb_dir"),
-    pybidsdb_reset=config.get("pybidsdb_reset"),
-    derivatives=config["derivatives"],
-    participant_label=config["participant_label"],
-    exclude_participant_label=config["exclude_participant_label"],
-)
-
-
-# this adds constraints to the bids naming
-wildcard_constraints:
-    **get_wildcard_constraints(config["pybids_inputs"]),
+# Workflow setup
+include: "rules/setup.smk"
+# Anatomical
+include: "rules/anatomical.smk"
 
 
 # ---- end snakebids boilerplate ------------------------------------------------
-
-
 rule all:
     input:
-        inputs_t1w["T1w"].expand(),
-    default_target: True
-    params:
-        inputs=lambda wcards, input: "- " + "\n- ".join(input),
-    shell:
-        """
-                cat <<EOF
-        All set 🚀🚀!
-
-        To get going, replace this \`rule all\` block with your own and start adding some rules.
-
-        If you need help, check out the tutorial:
-            https://snakebids.readthedocs.io/en/stable/tutorial/tutorial.html
-
-        Found the following inputs:
-        {params.inputs}
-
-        EOF
-        """
+        dtifit=expand(
+            bids(
+                root=root,
+                datatype="anat",
+                desc="preproc",
+                suffix="T1w.nii.gz",
+                **subj_wildcards,
+            ),
+            zip,
+            **subj_zip_list,
+        ),

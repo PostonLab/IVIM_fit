@@ -103,4 +103,7 @@ parse_args:
 
 #singularity containers
 singularity:
-    fsl: 'docker://brainlife/fsl/6.0.0'
+  synthstrip: 'docker://freesurfer/synthstrip:1.3'
+  itksnap: 'docker://khanlab/itksnap:latest' 
+  ants: 'docker://kaczmarj/ants:2.3.4'
+  #fsl: 'docker://brainlife/fsl/6.0.0'
