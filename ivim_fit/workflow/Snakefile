@@ -22,11 +22,12 @@ rule all:
     input:
         dtifit=expand(
             bids(
-                root=root,
-                datatype="anat",
-                desc="preproc",
-                suffix="T1w.nii.gz",
-                **subj_wildcards,
+                root=work,
+                suffix="b0.nii.gz",
+                desc="topup",
+                method="jac",
+                datatype="dwi",
+                **input_wildcards["dwi"],
             ),
             zip,
             **subj_zip_list,
