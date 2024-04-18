@@ -18,3 +18,6 @@ Preprocessing diffusion MRI data and fitting IVIM models
   4. If everything looks pretty, proceed with pushing changes. 
   5. Go to github and make a pull request for your changes. 
 
+## Acknowledgement 
+
+This project utilizes code adapted from the snakedwi pipeline ([https://github.com/akhanf/snakedwi]), an open-source project for diffusion MRI preprocessing. Their work provided a valuable foundation for building the preprocessing steps of IVIM_fit pipeline.
