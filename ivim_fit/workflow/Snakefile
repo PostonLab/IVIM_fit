@@ -13,8 +13,12 @@ configfile: "config/snakebids.yml"
 
 # Workflow setup
 include: "rules/setup.smk"
+include: "rules/workflowopts.smk"
 # Anatomical
 include: "rules/anatomical.smk"
+include: "rules/diffusion/prepdwi.smk"
+include: "rules/diffusion/motioncorr.smk"
+include: "rules/diffusion/topup.smk"
 
 
 # ---- end snakebids boilerplate ------------------------------------------------
@@ -23,12 +27,12 @@ rule all:
         dtifit=expand(
             bids(
                 root=work,
-                suffix="b0.nii.gz",
+                suffix="fmap.nii.gz",
                 desc="topup",
-                method="jac",
                 datatype="dwi",
-                **input_wildcards["dwi"],
+                **subj_wildcards,
             ),
             zip,
             **subj_zip_list,
+            acquisition="notspecified",
         ),
