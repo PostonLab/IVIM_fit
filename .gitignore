@@ -159,6 +159,7 @@ cython_debug/
 #.idea/
 
 /log
+/py3
 core.*
 .snakemake
 results

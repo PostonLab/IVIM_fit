@@ -73,14 +73,12 @@ rule get_phase_encode_txt:
             root=work,
             suffix="b0.nii.gz",
             datatype="dwi",
-            desc="degibbs",
             **input_wildcards["dwi"]
         ),
         json=bids(
             root=work,
             suffix="dwi.json",
             datatype="dwi",
-            desc="degibbs",
             **input_wildcards["dwi"]
         ),
     output:
@@ -88,7 +86,6 @@ rule get_phase_encode_txt:
             root=work,
             suffix="phenc.txt",
             datatype="dwi",
-            desc="degibbs",
             **input_wildcards["dwi"]
         ),
     group:
@@ -107,7 +104,6 @@ rule concat_phase_encode_txt:
                     root=work,
                     suffix="phenc.txt",
                     datatype="dwi",
-                    desc="degibbs",
                     **input_wildcards["dwi"]
                 ),
                 zip,
@@ -117,11 +113,7 @@ rule concat_phase_encode_txt:
         ),
     output:
         phenc_concat=bids(
-            root=work,
-            suffix="phenc.txt",
-            datatype="dwi",
-            desc="degibbs",
-            **subj_wildcards
+            root=work, suffix="phenc.txt", datatype="dwi", **subj_wildcards
         ),
     group:
         "subj"
@@ -137,7 +129,6 @@ rule concat_bzeros:
                     root=work,
                     suffix="b0.nii.gz",
                     datatype="dwi",
-                    desc="degibbs",
                     **input_wildcards["dwi"]
                 ),
                 zip,
@@ -152,7 +143,6 @@ rule concat_bzeros:
             root=work,
             suffix="concatb0.nii.gz",
             datatype="dwi",
-            desc="degibbs",
             **subj_wildcards
         ),
     container:

@@ -60,6 +60,18 @@ rule dwidenoise:
         "cp {input[3]} {output[3]}"
 
 
+def get_concat_or_cp_cmd(wildcards, input, output):
+    """Concatenate (if multiple inputs) or copy"""
+    if len(input) > 1:
+        cmd = f"mrcat {input} {output}"
+    elif len(input) == 1:
+        cmd = f"cp {input} {output}"
+    else:
+        # no inputs
+        cmd = None
+    return cmd
+
+
 def get_degibbs_inputs(wildcards):
     # Denoise as input if at least 30 dirs or not skipped
     import numpy as np
@@ -77,87 +89,9 @@ def get_degibbs_inputs(wildcards):
             suffix="dwi",
             datatype="dwi",
             desc="denoise",
-            **wildcards
+            **wildcards,
         )
     return multiext(prefix, ".nii.gz", ".bvec", ".bval", ".json")
-
-
-rule mrdegibbs:
-    input:
-        get_degibbs_inputs,
-    output:
-        multiext(
-            bids(
-                root=work,
-                suffix="dwi",
-                datatype="dwi",
-                desc="degibbs",
-                **input_wildcards["dwi"]
-            ),
-            ".nii.gz",
-            ".bvec",
-            ".bval",
-            ".json",
-        ),
-    container:
-        config["singularity"]["mrtrix"]
-    log:
-        bids(root="logs", suffix="degibbs.log", **input_wildcards["dwi"]),
-    group:
-        "subj"
-    shell:
-        "mrdegibbs {input[0]} {output[0]} 2> {log} && "
-        "cp {input[1]} {output[1]} && "
-        "cp {input[2]} {output[2]} && "
-        "cp {input[3]} {output[3]}"
-
-
-def get_concat_or_cp_cmd(wildcards, input, output):
-    """Concatenate (if multiple inputs) or copy"""
-    if len(input) > 1:
-        cmd = f"mrcat {input} {output}"
-    elif len(input) == 1:
-        cmd = f"cp {input} {output}"
-    else:
-        # no inputs
-        cmd = None
-    return cmd
-
-
-rule concat_degibbs_dwi:
-    input:
-        dwi_niis=lambda wildcards: get_dwi_indices(
-            expand(
-                bids(
-                    root=work,
-                    suffix="dwi.nii.gz",
-                    desc="degibbs",
-                    datatype="dwi",
-                    **input_wildcards["dwi"]
-                ),
-                zip,
-                **filter_list(input_zip_lists["dwi"], wildcards)
-            ),
-            wildcards,
-        ),
-    params:
-        cmd=get_concat_or_cp_cmd,
-    output:
-        dwi_concat=bids(
-            root=work,
-            suffix="dwi.nii.gz",
-            desc="degibbs",
-            datatype="dwi",
-            **subj_wildcards
-        ),
-    container:
-        config["singularity"]["mrtrix"]
-    log:
-        bids(root="logs", suffix="concat_degibbs_dwi.log", **subj_wildcards),
-    group:
-        "subj"
-    shell:
-        "{params.cmd} 2> {log}"
 
 
 rule concat_runs_bvec:
@@ -232,8 +166,8 @@ rule concat_runs_json:
                 bids(
                     root=work,
                     suffix="dwi.json",
-                    desc="{{desc}}",
                     datatype="dwi",
+                    desc="denoise",
                     **input_wildcards["dwi"]
                 ),
                 zip,
@@ -245,7 +179,7 @@ rule concat_runs_json:
         json=bids(
             root=work,
             suffix="dwi.json",
-            desc="{desc}",
+            desc="denoise",
             datatype="dwi",
             **subj_wildcards
         ),
@@ -324,14 +258,12 @@ rule get_phase_encode_txt:
             root=work,
             suffix="b0.nii.gz",
             datatype="dwi",
-            desc="degibbs",
             **input_wildcards["dwi"]
         ),
         json=bids(
             root=work,
             suffix="dwi.json",
             datatype="dwi",
-            desc="degibbs",
             **input_wildcards["dwi"]
         ),
     output:
@@ -339,7 +271,6 @@ rule get_phase_encode_txt:
             root=work,
             suffix="phenc.txt",
             datatype="dwi",
-            desc="degibbs",
             **input_wildcards["dwi"]
         ),
     group:
@@ -358,7 +289,6 @@ rule concat_phase_encode_txt:
                     root=work,
                     suffix="phenc.txt",
                     datatype="dwi",
-                    desc="degibbs",
                     **input_wildcards["dwi"]
                 ),
                 zip,
@@ -368,11 +298,7 @@ rule concat_phase_encode_txt:
         ),
     output:
         phenc_concat=bids(
-            root=work,
-            suffix="phenc.txt",
-            datatype="dwi",
-            desc="degibbs",
-            **subj_wildcards
+            root=work, suffix="phenc.txt", datatype="dwi", **subj_wildcards
         ),
     group:
         "subj"
@@ -388,7 +314,6 @@ rule concat_bzeros:
                     root=work,
                     suffix="b0.nii.gz",
                     datatype="dwi",
-                    desc="degibbs",
                     **input_wildcards["dwi"]
                 ),
                 zip,
@@ -403,7 +328,6 @@ rule concat_bzeros:
             root=work,
             suffix="concatb0.nii.gz",
             datatype="dwi",
-            desc="degibbs",
             **subj_wildcards
         ),
     container:

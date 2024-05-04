@@ -31,7 +31,8 @@ pybids_inputs:
     wildcards:
       - subject
       - acquisition
-      #- run'
+      - run
+      - direction
 
   T1w:
     filters:

@@ -40,7 +40,7 @@ subj_wildcards = inputs.subj_wildcards
 input_zip_lists = inputs.input_zip_lists
 input_path = inputs.input_path
 
-print(input_wildcards)
+# print(input_wildcards)
 
 # if no acquisiton, run or direction specified for diffusion image add acquisition wildcard to input_wildcards and add 'notspecified' for acquisition in corresponding images in input_zip_lists
 
