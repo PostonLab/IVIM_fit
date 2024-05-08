@@ -250,3 +250,22 @@ singularity:
 
 
 default_effective_echo_spacing: 0.0001 #if not defined in JSON files
+
+template: MNI152NLin2009cSym
+
+#Eddy flags
+eddy:
+  flags:
+    verbose: True
+    repol: True
+    cnr_maps: True
+    residuals: True
+    data_is_shelled: True
+  with_s2v:
+    mporder: 6
+    s2v_niter: 5
+    s2v_lambda: 1
+    s2v_interp: trilinear
+    ol_type: 'both'  #can be sw, gw, or both (use sw if no multi-band)
+  without_s2v:
+    ol_type: 'sw'  #can be sw, gw, or both (use sw if no multi-band)

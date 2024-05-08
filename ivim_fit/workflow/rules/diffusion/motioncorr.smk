@@ -9,7 +9,7 @@ rule moco_scan_bzeros_4d:
             root=work,
             suffix="b0s.nii.gz",
             datatype="dwi",
-            desc="degibbs",
+            desc="denoise",
             **input_wildcards["dwi"]
         ),
     output:

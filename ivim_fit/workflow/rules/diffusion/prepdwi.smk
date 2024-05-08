@@ -72,26 +72,40 @@ def get_concat_or_cp_cmd(wildcards, input, output):
     return cmd
 
 
-def get_degibbs_inputs(wildcards):
-    # Denoise as input if at least 30 dirs or not skipped
-    import numpy as np
-
-    in_dwi_bval = re.sub(
-        ".nii.gz", ".bval", input_path["dwi"].format(**wildcards)
-    )
-    bvals = np.loadtxt(in_dwi_bval)
-
-    if bvals.size < 30 or config["skip_denoise"]:
-        prefix = bids(root=work, suffix="dwi", datatype="dwi", **wildcards)
-    else:
-        prefix = bids(
+rule concat_dwi:
+    input:
+        dwi_niis=lambda wildcards: get_dwi_indices(
+            expand(
+                bids(
+                    root=work,
+                    suffix="dwi.nii.gz",
+                    desc="denoise",
+                    datatype="dwi",
+                    **input_wildcards["dwi"]
+                ),
+                zip,
+                **filter_list(input_zip_lists["dwi"], wildcards)
+            ),
+            wildcards,
+        ),
+    params:
+        cmd=get_concat_or_cp_cmd,
+    output:
+        dwi_concat=bids(
             root=work,
-            suffix="dwi",
-            datatype="dwi",
+            suffix="dwi.nii.gz",
             desc="denoise",
-            **wildcards,
-        )
-    return multiext(prefix, ".nii.gz", ".bvec", ".bval", ".json")
+            datatype="dwi",
+            **subj_wildcards
+        ),
+    container:
+        config["singularity"]["mrtrix"]
+    log:
+        bids(root="logs", suffix="concat_dwi.log", **subj_wildcards),
+    group:
+        "subj"
+    shell:
+        "{params.cmd} 2> {log}"
 
 
 rule concat_runs_bvec:
@@ -338,3 +352,22 @@ rule concat_bzeros:
         "subj"
     shell:
         "{params.cmd} 2> {log}"
+
+
+def get_b0_mask():
+    # Method options
+    methods = {
+        "b0_BET": "bet_from-b0",
+        "b0_SyN": f"b0SyN_from-{config['template']}",
+        "b0_synthstrip": "synthstrip_from-topupb0",
+    }
+
+    # Get BIDS name of file
+    return bids(
+        root=work,
+        suffix="mask.nii.gz",
+        desc="brain",
+        method=methods.get(config["masking_method"]),
+        datatype="dwi",
+        **subj_wildcards,
+    )

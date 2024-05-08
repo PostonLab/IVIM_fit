@@ -19,18 +19,20 @@ include: "rules/anatomical.smk"
 include: "rules/diffusion/prepdwi.smk"
 include: "rules/diffusion/motioncorr.smk"
 include: "rules/diffusion/topup.smk"
+include: "rules/diffusion/method_grabber.smk"
+include: "rules/diffusion/masking_b0_synthstrip.smk"
+include: "rules/diffusion/eddy.smk"
 
 
 # ---- end snakebids boilerplate ------------------------------------------------
 rule all:
     input:
         dtifit=expand(
-            bids(
-                root=work,
-                suffix="fmap.nii.gz",
-                desc="topup",
-                datatype="dwi",
-                **subj_wildcards,
+            os.path.join(
+                bids(
+                    root=work, suffix="eddy", datatype="dwi", **subj_wildcards
+                ),
+                "dwi.nii.gz",
             ),
             zip,
             **subj_zip_list,
