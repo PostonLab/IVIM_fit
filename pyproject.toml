@@ -13,12 +13,12 @@ classifiers = [
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.8,<3.12"
+python = ">=3.9.0,<3.12"
 snakemake = ">=7.20,<8"
 snakebids = ">=0.10.2"
 pulp = "<2.8.0"
 pandas = [
-    { version = "<=2.0.3", python = "<3.9" },
+    { version = "<=2.0.3", python = "<=3.9" },
     { version = ">=2.1.1", python = ">=3.12" },
 ]
 dipy = "^1.8.0"

@@ -10,7 +10,7 @@ from snakebids import (
 import subprocess as sp
 
 # from snakeboost import PipEnv
-# from lib.check_subj_dwi_metadata import check_subj_dwi_metadata
+from lib.check_subj_dwi_metadata import check_subj_dwi_metadata
 
 
 # writes inputs_config.yml and updates config dict
@@ -40,15 +40,20 @@ subj_wildcards = inputs.subj_wildcards
 input_zip_lists = inputs.input_zip_lists
 input_path = inputs.input_path
 
+# print(input_wildcards)
+
 # if no acquisiton, run or direction specified for diffusion image add acquisition wildcard to input_wildcards and add 'notspecified' for acquisition in corresponding images in input_zip_lists
-"""
+
 if not any(
-    [item in ["acq", "run", "dir"] for item in list(input_wildcards["dwi"].keys())]
+    [
+        item in ["acq", "run", "dir"]
+        for item in list(input_wildcards["dwi"].keys())
+    ]
 ):
     input_wildcards["dwi"]["acq"] = "{acquisition}"
     input_zip_lists["dwi"]["acquisition"] = ["notspecified"] * len(
         input_zip_lists["dwi"]["subject"]
-    )"""
+    )
 
 root = os.path.join(config["root"], "ivim_fit")
 work = os.path.join(config["root"], "work")

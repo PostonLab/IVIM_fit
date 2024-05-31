@@ -13,21 +13,25 @@ configfile: "config/snakebids.yml"
 
 # Workflow setup
 include: "rules/setup.smk"
+include: "rules/workflowopts.smk"
 # Anatomical
 include: "rules/anatomical.smk"
+include: "rules/diffusion/prepdwi.smk"
+include: "rules/diffusion/motioncorr.smk"
+include: "rules/diffusion/topup.smk"
+include: "rules/diffusion/method_grabber.smk"
+include: "rules/diffusion/masking_b0_synthstrip.smk"
+include: "rules/diffusion/eddy.smk"
 
 
 # ---- end snakebids boilerplate ------------------------------------------------
 rule all:
     input:
-        dtifit=expand(
-            bids(
-                root=root,
-                datatype="anat",
-                desc="preproc",
-                suffix="T1w.nii.gz",
-                **subj_wildcards,
+        dtifit=lambda wildcards: get_dwi_indices(
+            expand(
+                rules.run_eddy_correct.output.dwi,
+                zip,
+                **filter_list(input_zip_lists["dwi"], wildcards)
             ),
-            zip,
-            **subj_zip_list,
+            wildcards,
         ),
