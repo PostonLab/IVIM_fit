@@ -75,7 +75,14 @@ def get_applytopup_inindex(wildcards):
 
 rule apply_topup_jac:
     input:
-        nii=rules.moco_scan_bzeros_4d.output.nii_avg3d,
+        nii=bids(
+            root=work,
+            suffix="dwi.nii.gz",
+            desc="denoise",
+            datatype="dwi",
+            **input_wildcards["dwi"],
+        ),
+        b0nii=rules.moco_scan_bzeros_4d.output.nii_avg3d,
         phenc_scan=rules.get_phase_encode_txt.output.phenc_txt,
         phenc_concat=rules.concat_phase_encode_txt.output.phenc_concat,
         topup_fieldcoef=rules.run_topup.output.topup_fieldcoef,
@@ -91,7 +98,7 @@ rule apply_topup_jac:
     output:
         nii=bids(
             root=work,
-            suffix="b0.nii.gz",
+            suffix="dwi.nii.gz",
             desc="topup",
             method="jac",
             datatype="dwi",
