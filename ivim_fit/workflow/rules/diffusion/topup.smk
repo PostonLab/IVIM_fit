@@ -115,6 +115,41 @@ rule apply_topup_jac:
         " -t {params.topup_prefix} -o dwi_topup --method=jac && mv dwi_topup.nii.gz {output.nii}"
 
 
+rule apply_topup_b0_jac:
+    input:
+        nii=rules.moco_scan_bzeros_4d.output.nii_avg3d,
+        phenc_scan=rules.get_phase_encode_txt.output.phenc_txt,
+        phenc_concat=rules.concat_phase_encode_txt.output.phenc_concat,
+        topup_fieldcoef=rules.run_topup.output.topup_fieldcoef,
+        topup_movpar=rules.run_topup.output.topup_movpar,
+    params:
+        inindex=get_applytopup_inindex,
+        topup_prefix=bids(
+            root=work,
+            suffix="topup",
+            datatype="dwi",
+            **subj_wildcards,
+        ),
+    output:
+        nii=bids(
+            root=work,
+            suffix="b0.nii.gz",
+            desc="topup",
+            method="jac",
+            datatype="dwi",
+            **input_wildcards["dwi"]
+        ),
+    container:
+        config["singularity"]["fsl"]
+    shadow:
+        "minimal"
+    group:
+        "subj"
+    shell:
+        " applytopup --verbose --datain={input.phenc_concat} --imain={input.nii} --inindex={params.inindex} "
+        " -t {params.topup_prefix} -o dwi_topup --method=jac && mv dwi_topup.nii.gz {output.nii}"
+
+
 ruleorder: avg_b0s_topup_jac > get_shell_avg
 
 

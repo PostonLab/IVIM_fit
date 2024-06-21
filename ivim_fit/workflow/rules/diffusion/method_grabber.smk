@@ -73,13 +73,3 @@ rule cp_dwi_ref:
         "subj"
     shell:
         "cp {input} {output}"
-
-
-"""bids(
-        root=work,
-        suffix="b0.nii.gz",
-        desc="topup",
-        method="jac",
-        datatype="dwi",
-        **subj_wildcards,
-    ),"""
