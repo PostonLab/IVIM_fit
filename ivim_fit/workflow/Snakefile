@@ -22,16 +22,50 @@ include: "rules/diffusion/topup.smk"
 include: "rules/diffusion/method_grabber.smk"
 include: "rules/diffusion/masking_b0_synthstrip.smk"
 include: "rules/diffusion/eddy.smk"
+include: "rules/diffusion/fitting.smk"
 
 
 # ---- end snakebids boilerplate ------------------------------------------------
 rule all:
     input:
-        dtifit=lambda wildcards: get_dwi_indices(
-            expand(
-                rules.run_eddy_correct.output.dwi,
-                zip,
-                **filter_list(input_zip_lists["dwi"], wildcards)
+        dtifit=expand(
+            bids(
+                root=work,
+                suffix="dwi.nii.gz",
+                datatype="dwi",
+                desc="eddy",
+                **subj_wildcards
             ),
-            wildcards,
+            zip,
+            **subj_zip_list
+        ),
+        b0=expand(
+            bids(
+                root=work,
+                suffix="b0.nii.gz",
+                desc="topup",
+                method="jac",
+                datatype="dwi",
+                **subj_wildcards
+            ),
+            zip,
+            **subj_zip_list
+        ),
+        b0_mask=expand(
+            bids(
+                root=work,
+                suffix="mask.nii.gz",
+                desc="brain",
+                method="synthstrip",
+                from_="topupb0",
+                datatype="dwi",
+                **subj_wildcards
+            ),
+            zip,
+            **subj_zip_list
+        ),
+        fit=expand(
+            bids(root=work, suffix="concat-ivimfit.csv", **subj_wildcards),
+            zip,
+            **subj_zip_list
         ),
