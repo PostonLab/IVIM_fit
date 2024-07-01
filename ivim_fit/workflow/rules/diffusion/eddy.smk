@@ -1,8 +1,7 @@
-
 def get_dwi_for_eddy(filename):
     # Replace target_string in the filename with replacement_string
-    new_filename = filename.replace('{dir}', 'AP')
-    new_filename = new_filename.replace('{run}', '1')
+    new_filename = filename.replace("{dir}", "AP")
+    new_filename = new_filename.replace("{run}", "1")
     return new_filename
 
 

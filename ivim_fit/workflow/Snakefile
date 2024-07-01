@@ -39,20 +39,18 @@ rule all:
             zip,
             **subj_zip_list
         ),
-
         b0=expand(
             bids(
-            root=work,
-            suffix="b0.nii.gz",
-            desc="topup",
-            method="jac",
-            datatype="dwi",
-            **subj_wildcards
+                root=work,
+                suffix="b0.nii.gz",
+                desc="topup",
+                method="jac",
+                datatype="dwi",
+                **subj_wildcards
             ),
             zip,
             **subj_zip_list
         ),
-
         b0_mask=expand(
             bids(
                 root=work,
@@ -66,13 +64,8 @@ rule all:
             zip,
             **subj_zip_list
         ),
-
         fit=expand(
-            bids(
-                root=work,
-                suffix="test.txt",
-                **subj_wildcards
-            ),
+            bids(root=work, suffix="concat-ivimfit.csv", **subj_wildcards),
             zip,
             **subj_zip_list
         ),
