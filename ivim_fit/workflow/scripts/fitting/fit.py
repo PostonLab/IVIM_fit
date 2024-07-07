@@ -12,7 +12,7 @@ from scipy.optimize import curve_fit
 repo_url = "https://github.com/merelvdthiel/TF2.4_IVIM-MRI_CodeCollection.git"  # IVIM fit repo
 destination_dir = "."  # desired directory o fthe repo
 
-subprocess.run(["git", "clone", repo_url])
+# subprocess.run(["git", "clone", repo_url])
 
 sys.path.insert(0, "TF2.4_IVIM-MRI_CodeCollection")
 
@@ -26,6 +26,8 @@ from src.standardized.OGC_AmsterdamUMC_Bayesian_biexp import (
 from src.wrappers.ivim_fit import ivim_fit
 from src.wrappers.OsipiBase import OsipiBase
 
+# We can import all algorithms and select the ones we want to use using the config file.
+# Only 2 is hard coded for now.
 algorithm1 = IAR_LU_biexp()
 algorithm2 = OGC_AmsterdamUMC_Bayesian_biexp()
 
@@ -95,7 +97,7 @@ def preprocess_and_normalize(data, bval, lower_idx, upper_idx):
 def fit_and_map_params(
     data, bval, lower_idx, upper_idx, algorithm, algorithm_name
 ):
-    data_norm, valid_id, dimensions = preprocess_and_normalize(
+    """data_norm, valid_id, dimensions = preprocess_and_normalize(
         data, bval, lower_idx, upper_idx
     )
     sx, sy, sz = dimensions[0], dimensions[1], dimensions[2]
@@ -121,7 +123,7 @@ def fit_and_map_params(
 
     D_map = np.zeros([sx * sy * sz])
     D_map[valid_id] = D_array[0 : sum(valid_id)]
-    D_map = np.reshape(D_map, [sx, sy, sz])
+    D_map = np.reshape(D_map, [sx, sy, sz])"""
 
     # Generate and return tuple including unique string identifier and result
     unique_index = "slice-{}to{}".format(lower_idx, upper_idx)
@@ -130,22 +132,22 @@ def fit_and_map_params(
 
     savedir = f"{out_dir}_{algorithm_name}/{unique_index}"
 
-    make_dir(savedir)
+    # make_dir(savedir)
 
     # save these volumes as nii.gz files
-    # savedir=('.')
-    nib.save(
+
+    """nib.save(
         nib.Nifti1Image(f_map, dwi_img.affine, dwi_img.header),
         f"{savedir}/F.nii.gz",
     )
     nib.save(
         nib.Nifti1Image(Dstar_map, dwi_img.affine, dwi_img.header),
-        f"{savedir}/Dstar.nii.gz",
+        f"{savedir}/Dstar.nii.gz",s
     )
     nib.save(
         nib.Nifti1Image(D_map, dwi_img.affine, dwi_img.header),
         f"{savedir}/D.nii.gz",
-    )
+    )"""
 
     return savedir
 
