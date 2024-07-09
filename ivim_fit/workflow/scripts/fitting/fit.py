@@ -97,7 +97,7 @@ def preprocess_and_normalize(data, bval, lower_idx, upper_idx):
 def fit_and_map_params(
     data, bval, lower_idx, upper_idx, algorithm, algorithm_name
 ):
-    """data_norm, valid_id, dimensions = preprocess_and_normalize(
+    data_norm, valid_id, dimensions = preprocess_and_normalize(
         data, bval, lower_idx, upper_idx
     )
     sx, sy, sz = dimensions[0], dimensions[1], dimensions[2]
@@ -123,7 +123,7 @@ def fit_and_map_params(
 
     D_map = np.zeros([sx * sy * sz])
     D_map[valid_id] = D_array[0 : sum(valid_id)]
-    D_map = np.reshape(D_map, [sx, sy, sz])"""
+    D_map = np.reshape(D_map, [sx, sy, sz])
 
     # Generate and return tuple including unique string identifier and result
     unique_index = "slice-{}to{}".format(lower_idx, upper_idx)
@@ -132,22 +132,23 @@ def fit_and_map_params(
 
     savedir = f"{out_dir}_{algorithm_name}/{unique_index}"
 
-    # make_dir(savedir)
+    make_dir(savedir)
 
     # save these volumes as nii.gz files
 
-    """nib.save(
+    nib.save(
         nib.Nifti1Image(f_map, dwi_img.affine, dwi_img.header),
         f"{savedir}/F.nii.gz",
     )
     nib.save(
         nib.Nifti1Image(Dstar_map, dwi_img.affine, dwi_img.header),
-        f"{savedir}/Dstar.nii.gz",s
+        f"{savedir}/Dstar.nii.gz",
+        s,
     )
     nib.save(
         nib.Nifti1Image(D_map, dwi_img.affine, dwi_img.header),
         f"{savedir}/D.nii.gz",
-    )"""
+    )
 
     return savedir
 
