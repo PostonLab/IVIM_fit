@@ -1,5 +1,3 @@
-from multiprocessing import Pool
-
 import nibabel as nib
 import numpy as np
 import pandas as pd
@@ -27,15 +25,12 @@ def process_row(row):
 # Load the CSV file
 df = pd.read_csv(snakemake.input.resampled)
 
-# Create a Pool and process each row independently in parallel
+# Create a loop to get mean for each row
 output_filename_list = []
 for index, row in df.iterrows():
 
     file_names = process_row(row)
     output_filename_list.append(file_names)
-
-
-    # print(output_filename_list)
 
 df_mean = pd.DataFrame()
 
