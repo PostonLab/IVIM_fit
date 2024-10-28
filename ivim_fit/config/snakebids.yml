@@ -283,3 +283,8 @@ resample_dwi:
     - 1.0
     - 1.0
     - 1.0
+
+execution:
+  slurm:
+    sbatch_exec: /usr/bin/sbatch
+    sbatch_args: "-p general -n 8 -t 4:00:00"
