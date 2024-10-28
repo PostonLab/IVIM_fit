@@ -22,8 +22,10 @@ rule fit_ivim:
         out_dir=bids(root=work, datatype="dwi", **subj_wildcards),
     output:
         fitted=bids(root=work, suffix="ivimfit.csv", **subj_wildcards),
+    threads: 8
     resources:
         mem_mb=32000,  # this is going to be dependent on image size
+        runtime=720,
     group:
         "subj"
     script:
@@ -84,4 +86,4 @@ rule mean_directions:
     group:
         "subj"
     script:
-        "../../scripts/fitting/mean_fitted.py"
+        "../../scripts/fitting/mean_fitted_loop.py"
