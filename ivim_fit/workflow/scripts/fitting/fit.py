@@ -12,7 +12,7 @@ from scipy.optimize import curve_fit
 repo_url = "https://github.com/merelvdthiel/TF2.4_IVIM-MRI_CodeCollection.git"  # IVIM fit repo
 destination_dir = "."  # desired directory o fthe repo
 
-# subprocess.run(["git", "clone", repo_url])
+subprocess.run(["git", "clone", repo_url])
 
 sys.path.insert(0, "TF2.4_IVIM-MRI_CodeCollection")
 
@@ -143,7 +143,6 @@ def fit_and_map_params(
     nib.save(
         nib.Nifti1Image(Dstar_map, dwi_img.affine, dwi_img.header),
         f"{savedir}/Dstar.nii.gz",
-        s,
     )
     nib.save(
         nib.Nifti1Image(D_map, dwi_img.affine, dwi_img.header),
