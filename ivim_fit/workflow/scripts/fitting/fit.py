@@ -26,6 +26,8 @@ from src.standardized.OGC_AmsterdamUMC_Bayesian_biexp import (
 from src.wrappers.ivim_fit import ivim_fit
 from src.wrappers.OsipiBase import OsipiBase
 
+# We can import all algorithms and select the ones we want to use using the config file.
+# Only 2 is hard coded for now.
 algorithm1 = IAR_LU_biexp()
 algorithm2 = OGC_AmsterdamUMC_Bayesian_biexp()
 
@@ -133,7 +135,7 @@ def fit_and_map_params(
     make_dir(savedir)
 
     # save these volumes as nii.gz files
-    # savedir=('.')
+
     nib.save(
         nib.Nifti1Image(f_map, dwi_img.affine, dwi_img.header),
         f"{savedir}/F.nii.gz",

@@ -247,6 +247,7 @@ singularity:
   python: 'docker://khanlab/pythondeps-snakedwi:v0.2.0'
   prepdwi: 'docker://khanlab/prepdwi:latest' 
   fsl: 'docker://fnndsc/fsl:6.0.4-cuda9.1'
+  synthsr: 'docker://akhanf/synthsr:main'
 
 
 default_effective_echo_spacing: 0.0001 #if not defined in JSON files
@@ -269,3 +270,21 @@ eddy:
     ol_type: 'both'  #can be sw, gw, or both (use sw if no multi-band)
   without_s2v:
     ol_type: 'sw'  #can be sw, gw, or both (use sw if no multi-band)
+
+
+# Options for resampling dwi in T1w space
+#  1. can resample as T1w resolution
+#  2. can resample as original dwi resolution 
+#  3. can resample as specified resolution
+resample_dwi:
+  resample_scheme: 'orig' # should be one of: ['T1w', 'orig', 'custom']
+  custom_resolution: #only needed if the 'custom' 
+  resample_mm: 
+    - 1.0
+    - 1.0
+    - 1.0
+
+execution:
+  slurm:
+    sbatch_exec: /usr/bin/sbatch
+    sbatch_args: "-p general -n 8 -t 4:00:00"
