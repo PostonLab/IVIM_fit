@@ -32,6 +32,30 @@ rule fit_ivim:
         "../../scripts/fitting/fit.py"
 
 
+rule average_n_fit_ivim:
+    input:
+        dwi_t1_space=rules.resample_dwi_to_t1w.output.dwi,
+        mask=rules.reg_dwi_to_t1.output.warped_avgb0,
+        t1_seg=rules.segment_t1.output.t1_seg,
+        bval=get_bval_for_fitting,
+        label_lookup=os.path.join(
+            workflow.basedir, config["synthseg_label_lookup"]
+        ),
+    params:
+        out_dir=bids(root=work, datatype="dwi", **subj_wildcards),
+    output:
+        avg_n_fitted=bids(
+            root=work, suffix="average_n_fitted_ivim.csv", **subj_wildcards
+        ),
+    threads: 8
+    resources:
+        mem_mb=32000,  # this is going to be dependent on image size
+    group:
+        "subj"
+    script:
+        "../../scripts/fitting/avg_n_fit.py"
+
+
 rule concat_directions:
     input:
         fitted_dwi=rules.fit_ivim.output.fitted,
@@ -49,7 +73,7 @@ rule concat_directions:
         "../../scripts/fitting/concat_fitted.py"
 
 
-rule resample_dwi_to_t1w:
+rule resample_fitted_dwi_to_t1w:
     input:
         ref=rules.reg_dwi_to_t1.output.warped_avgb0,
         concatted=rules.concat_directions.output.concatted,
@@ -76,7 +100,7 @@ rule resample_dwi_to_t1w:
 
 rule mean_directions:
     input:
-        resampled=rules.resample_dwi_to_t1w.output.resampled,
+        resampled=rules.resample_fitted_dwi_to_t1w.output.resampled,
     params:
         out_dir=bids(root=work, datatype="dwi", **subj_wildcards),
     output:
