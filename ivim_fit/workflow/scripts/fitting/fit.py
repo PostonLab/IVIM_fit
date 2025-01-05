@@ -9,8 +9,8 @@ import numpy as np
 import pandas as pd
 from scipy.optimize import curve_fit
 
-repo_url = "https://github.com/merelvdthiel/TF2.4_IVIM-MRI_CodeCollection.git"  # IVIM fit repo
-destination_dir = "."  # desired directory o fthe repo
+repo_url = "https://github.com/OSIPI/TF2.4_IVIM-MRI_CodeCollection.git"  # IVIM fit repo
+destination_dir = "."  # desired directory of the repo
 
 subprocess.run(["git", "clone", repo_url])
 
