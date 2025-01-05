@@ -83,3 +83,36 @@ rule n4_t1_withmask:
     shell:
         "ITK_GLOBAL_DEFAULT_NUMBER_OF_THREADS={threads} "
         "N4BiasFieldCorrection -d 3 -i {input.t1} -x {input.mask} -o {output}"
+
+
+rule segment_t1:
+    input:
+        t1w=bids(
+            root=root,
+            datatype="anat",
+            desc="preproc",
+            suffix="T1wSynthSR.nii.gz",
+            **subj_wildcards
+        ),
+    output:
+        t1_seg=bids(
+            root=work,
+            datatype="anat",
+            space="orig",
+            label="wholebrain",
+            suffix="probseg.nii.gz",
+            **subj_wildcards,
+        ),
+    params:
+        out_dir=bids(root=work, **subj_wildcards),
+    resources:
+        mem_mb=32000,
+        runtime=60,
+        disk_mb=8000,
+    threads: 8
+    container:
+        config["singularity"]["freesurfer"]
+    group:
+        "subj"
+    shell:
+        "mri_synthseg --i {input.t1w} --o {output.t1_seg} --parc --threads {threads} --cpu"

@@ -71,3 +71,37 @@ rule all:
             zip,
             **subj_zip_list
         ),
+        t1_seg=expand(
+            bids(
+                root=work,
+                datatype="anat",
+                space="orig",
+                label="wholebrain",
+                suffix="probseg.nii.gz",
+                **subj_wildcards,
+            ),
+            zip,
+            **subj_zip_list,
+        ),
+        dwi=expand(
+            bids(
+                root=root,
+                suffix="dwi.nii.gz",
+                desc="eddy",
+                space="T1w",
+                res=config["resample_dwi"]["resample_scheme"],
+                datatype="dwi",
+                **subj_wildcards
+            ),
+            zip,
+            **subj_zip_list
+        ),
+        avg_n_fitted=expand(
+            bids(
+                root=work,
+                suffix="average_n_fitted_ivim.csv",
+                **subj_wildcards
+            ),
+            zip,
+            **subj_zip_list
+        ),

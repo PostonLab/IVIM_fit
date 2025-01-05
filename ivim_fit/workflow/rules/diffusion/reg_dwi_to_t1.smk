@@ -354,32 +354,39 @@ rule create_cropped_ref_custom_resolution:
         "c3d {input} -resample-mm {params.resolution} {output}"
 
 
-"""
 rule resample_dwi_to_t1w:
     input:
         ref=rules.reg_dwi_to_t1.output.warped_avgb0,
-        concatted=rules.concat_directions.output.concatted,
+        dwi=rules.run_eddy_correct.output.dwi,
         xfm_itk=rules.convert_xfm_ras2itk.output.xfm_itk,
-        script=os.path.join(workflow.basedir, f"scripts/fitting/transform.sh"),
     params:
         interpolation="Linear",
-        out_dir=bids(root=work, datatype="dwi", **subj_wildcards),
     output:
-        resampled=bids(
-            root=work, suffix="resampled-ivimfit.csv", **subj_wildcards
+        dwi=bids(
+            root=work,
+            suffix="dwi.nii.gz",
+            desc="eddy",
+            space="T1w",
+            res=config["resample_dwi"]["resample_scheme"],
+            datatype="dwi",
+            **subj_wildcards
         ),
     container:
         config["singularity"]["ants"]
     resources:
-        mem_mb=32000,  # this is going to be dependent on image size
+        mem_mb=64000,  # this is going to be dependent on image size
+        disk_mb=8000,
     group:
         "subj"
     shell:
-        "chmod a+x {input.script} && "
-        "{input.script} {input.concatted} {input.ref} {input.xfm_itk} "
-        "{params.interpolation} {params.out_dir} {output.resampled}"
+        "antsApplyTransforms -d 3 --input-image-type 3 "
+        "--input {input.dwi} --reference-image {input.ref} "
+        "--transform {input.xfm_itk} "
+        f"{'-t {input.gradcorrect_warp}' if config['gradcorrect_coeffs'] else ''} "
+        "--interpolation {params.interpolation} --output {output.dwi} --verbose "
 
 
+"""
 
 
 rule resample_brainmask_to_t1w:
@@ -501,5 +508,4 @@ rule dtifit_resampled_t1w:
         "mkdir -p {output.out_folder} && "
         "dtifit --data={input.dwi} --bvecs={input.bvecs} --bvals={input.bvals} "
         "--mask={input.brainmask} --out={params.out_basename}"
-
 """

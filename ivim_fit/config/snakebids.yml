@@ -248,6 +248,7 @@ singularity:
   prepdwi: 'docker://khanlab/prepdwi:latest' 
   fsl: 'docker://fnndsc/fsl:6.0.4-cuda9.1'
   synthsr: 'docker://akhanf/synthsr:main'
+  freesurfer: 'docker://freesurfer/freesurfer:7.4.1'
 
 
 default_effective_echo_spacing: 0.0001 #if not defined in JSON files
@@ -283,6 +284,9 @@ resample_dwi:
     - 1.0
     - 1.0
     - 1.0
+
+
+synthseg_label_lookup: resources/synthseg_cortparc_labels.tsv
 
 execution:
   slurm:
