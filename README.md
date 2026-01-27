@@ -1,5 +1,7 @@
 # IVIM_fit
 
+https://postonlab.github.io/IVIM_docs/
+
 Preprocessing diffusion MRI data and fitting IVIM models
 
 ## How to use:
