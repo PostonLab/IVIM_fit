@@ -29,7 +29,7 @@ rule run_topup:
             datatype="dwi",
             **subj_wildcards,
         ),
-        config="b02b0.cnf",  #sets this to b02b0_1.cnf if slices are odd number
+        config="b02b0_1.cnf",  #sets this to b02b0_1.cnf if slices are odd number
     output:
         bzero_corrected=bids(
             root=work,

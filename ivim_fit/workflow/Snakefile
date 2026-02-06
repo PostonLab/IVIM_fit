@@ -85,7 +85,7 @@ rule all:
         ),
         dwi=expand(
             bids(
-                root=root,
+                root=work,
                 suffix="dwi.nii.gz",
                 desc="eddy",
                 space="T1w",

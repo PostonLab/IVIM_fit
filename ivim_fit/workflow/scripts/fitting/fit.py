@@ -108,9 +108,9 @@ def fit_and_map_params(
     maps = OsipiBase.osipi_fit(algorithm, data_norm, np.unique(bval))
 
     # Extract each parameter's array
-    f_array = maps[:, 0]
-    Dstar_array = maps[:, 1]
-    D_array = maps[:, 2]
+    f_array = maps.get("f")
+    Dstar_array = maps.get("D*")
+    D_array = maps.get("D")
 
     # Create parameter maps and reshape each map to the original 3D form
     f_map = np.zeros([sx * sy * sz])

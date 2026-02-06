@@ -32,7 +32,7 @@ rule fit_ivim:
         "../../scripts/fitting/fit.py"
 
 
-rule average_n_fit_ivim:
+rule average_dwi:
     input:
         dwi_t1_space=rules.resample_dwi_to_t1w.output.dwi,
         mask=rules.reg_dwi_to_t1.output.warped_avgb0,
@@ -44,10 +44,28 @@ rule average_n_fit_ivim:
     params:
         out_dir=bids(root=work, datatype="dwi", **subj_wildcards),
     output:
+        avg_dwi=bids(root=work, suffix="average_dwi.csv", **subj_wildcards),
+    resources:
+        mem_mb=32000,  # this is going to be dependent on image size
+    group:
+        "subj"
+    script:
+        "../../scripts/fitting/avg_dwi.py"
+
+
+rule average_n_fit_ivim:
+    input:
+        avg_dwi_t1_space=rules.average_dwi.output.avg_dwi,
+        bval=get_bval_for_fitting,
+        label_lookup=os.path.join(
+            workflow.basedir, config["synthseg_label_lookup"]
+        ),
+    params:
+        out_dir=bids(root=work, datatype="dwi", **subj_wildcards),
+    output:
         avg_n_fitted=bids(
             root=work, suffix="average_n_fitted_ivim.csv", **subj_wildcards
         ),
-    threads: 8
     resources:
         mem_mb=32000,  # this is going to be dependent on image size
     group:
