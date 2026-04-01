@@ -15,7 +15,7 @@ classifiers = [
 [tool.poetry.dependencies]
 python = ">=3.9.0,<3.12"
 snakemake = ">=7.20,<8"
-snakebids = ">=0.10.2"
+snakebids = ">=0.14.0"
 pulp = "<2.8.0"
 pandas = ">=2.2.0"
 dipy = "^1.8.0"
@@ -24,6 +24,7 @@ tqdm = "^4.66.4"
 joblib = "^1.4.2"
 nipype = "^1.8.6"
 nilearn = "^0.11.1"
+datrie = {version = "*", optional = true} 
 
 [tool.poetry.scripts]
 ivim_fit = "ivim_fit.run:main"
