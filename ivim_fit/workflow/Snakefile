@@ -96,12 +96,12 @@ rule all:
             zip,
             **subj_zip_list
         ),
-        avg_n_fitted=expand(
-            bids(
-                root=work,
-                suffix="average_n_fitted_ivim.csv",
-                **subj_wildcards
-            ),
-            zip,
-            **subj_zip_list
-        ),
+        #avg_n_fitted=expand(
+        #    bids(
+        #        root=work,
+        #        suffix="average_n_fitted_ivim.csv",
+        #        **subj_wildcards
+        #    ),
+        #    zip,
+        #    **subj_zip_list
+        #),
