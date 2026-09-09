@@ -54,10 +54,17 @@ rule dwidenoise:
     group:
         "subj"
     shell:
-        "dwidenoise {input[0]} {output[0]} 2> {log} && "
-        "cp {input[1]} {output[1]} && "
-        "cp {input[2]} {output[2]} && "
-        "cp {input[3]} {output[3]}"
+        """
+        ndim=$(mrinfo {input[0]} -ndim)
+        if [ "$ndim" -eq 4 ]; then
+            dwidenoise {input[0]} {output[0]} 2> {log}
+        else
+            cp {input[0]} {output[0]}
+        fi
+        cp {input[1]} {output[1]}
+        cp {input[2]} {output[2]}
+        cp {input[3]} {output[3]}
+        """
 
 
 def get_concat_or_cp_cmd(wildcards, input, output):
